@@ -4,8 +4,7 @@ import { useEffect, useState, use } from "react";
 import { StatusTracker } from "@/components/order/status-tracker";
 import { OrderDetails } from "@/components/order/order-details";
 import Link from "next/link";
-import { ArrowLeft, Loader2, RefreshCw, Radio } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowLeft, Loader2 } from "lucide-react";
 
 export default function OrderTrackingPage({
   params,
@@ -105,10 +104,11 @@ export default function OrderTrackingPage({
         <div className="p-4 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive">
           <p className="font-semibold text-sm">{error || "Order not found"}</p>
         </div>
-        <Link href="/">
-          <Button variant="outline" className="rounded-xl">
-            Return to Menu
-          </Button>
+        <Link
+          href="/"
+          className="inline-flex items-center justify-center h-9 px-4 rounded-xl text-sm font-medium border border-border bg-background hover:bg-muted transition-colors"
+        >
+          Return to Menu
         </Link>
       </div>
     );

@@ -71,7 +71,10 @@ export async function getAuthSession(request?: Request) {
   if (request) {
     const testSession = request.headers.get("x-test-session");
     if (testSession) {
-      return JSON.parse(testSession);
+      const parsed = JSON.parse(testSession);
+      // If already wrapped in { user: ... }, return as-is; otherwise wrap it
+      if (parsed.user) return parsed;
+      return { user: parsed };
     }
   }
   try {

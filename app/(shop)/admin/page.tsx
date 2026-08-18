@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { AdminOrderList } from "@/components/admin/order-list";
 import { redirect } from "next/navigation";
-import { ShieldCheck, Utensils } from "lucide-react";
+import { Utensils } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
