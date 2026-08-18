@@ -55,8 +55,9 @@ export function Header() {
                 href="/admin"
                 className="text-amber-600 dark:text-amber-400 font-semibold hover:text-amber-500 transition-colors flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10"
               >
+
                 <ShieldAlert className="size-4" />
-                <span>Kitchen Console</span>
+                <span>All Orders</span>
               </Link>
             )}
           </nav>

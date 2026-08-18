@@ -5,7 +5,7 @@ export interface DBUser {
   name: string;
   email: string;
   phone: string | null;
-  password: string; // hashed
+  password: string;
   role: "USER" | "ADMIN";
   address: string | null;
   createdAt: Date;
@@ -89,7 +89,7 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: "Margherita Pizza",
     description: "Classic pizza with fresh mozzarella, San Marzano tomatoes, and basil on a crispy thin crust.",
     price: 299,
-    image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80",
     category: "PIZZA",
     isAvailable: true,
   },
@@ -97,7 +97,7 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: "Pepperoni Feast",
     description: "Loaded with double pepperoni, mozzarella cheese, and our signature marinara sauce.",
     price: 399,
-    image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=600&q=80",
     category: "PIZZA",
     isAvailable: true,
   },
@@ -105,7 +105,7 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: "BBQ Chicken Pizza",
     description: "Smoky BBQ sauce, grilled chicken, red onions, and cilantro on a garlic butter crust.",
     price: 449,
-    image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80",
     category: "PIZZA",
     isAvailable: true,
   },
@@ -114,7 +114,7 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: "Classic Smash Burger",
     description: "Double smashed patties with American cheese, pickles, onions, and special sauce.",
     price: 199,
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
     category: "BURGERS",
     isAvailable: true,
   },
@@ -122,7 +122,7 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: "Spicy Chicken Burger",
     description: "Crispy fried chicken with sriracha mayo, jalapeños, lettuce, and coleslaw.",
     price: 229,
-    image: "https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=500&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=600&q=80",
     category: "BURGERS",
     isAvailable: true,
   },
@@ -131,7 +131,7 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: "Penne Arrabbiata",
     description: "Penne pasta in a spicy tomato sauce with garlic, chili flakes, and fresh parsley.",
     price: 249,
-    image: "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=500&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1621996346565-e3d5d628169a?auto=format&fit=crop&w=600&q=80",
     category: "PASTA",
     isAvailable: true,
   },
@@ -139,7 +139,7 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: "Creamy Alfredo",
     description: "Fettuccine in a rich, creamy Parmesan Alfredo sauce with grilled chicken and mushrooms.",
     price: 329,
-    image: "https://images.unsplash.com/photo-1645112411341-6c4fd023714a?w=500&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1645112411341-6c4fd023714a?auto=format&fit=crop&w=600&q=80",
     category: "PASTA",
     isAvailable: true,
   },
@@ -148,7 +148,7 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: "Garlic Bread",
     description: "Toasted ciabatta with roasted garlic butter, herbs, and melted mozzarella.",
     price: 129,
-    image: "https://images.unsplash.com/photo-1619535860434-ba1d8fa12536?w=500&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1619535860434-ba1d8fa12536?auto=format&fit=crop&w=600&q=80",
     category: "SIDES",
     isAvailable: true,
   },
@@ -156,7 +156,7 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: "Loaded Fries",
     description: "Crispy golden fries topped with cheese sauce, bacon bits, jalapeños, and sour cream.",
     price: 179,
-    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=500&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=80",
     category: "SIDES",
     isAvailable: true,
   },
@@ -165,7 +165,7 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: "Fresh Lime Soda",
     description: "Freshly squeezed lime with soda water, a hint of mint, and your choice of sweet or salted.",
     price: 79,
-    image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed514?w=500&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed514?auto=format&fit=crop&w=600&q=80",
     category: "BEVERAGES",
     isAvailable: true,
   },
@@ -173,7 +173,7 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: "Mango Smoothie",
     description: "Thick and creamy alphonso mango smoothie blended with yogurt and a touch of honey.",
     price: 149,
-    image: "https://images.unsplash.com/photo-1546173159-315724a31696?w=500&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=600&q=80",
     category: "BEVERAGES",
     isAvailable: true,
   },
@@ -181,7 +181,7 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: "Cold Coffee",
     description: "Rich cold brew coffee blended with milk, vanilla ice cream, and chocolate drizzle.",
     price: 129,
-    image: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=500&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=600&q=80",
     category: "BEVERAGES",
     isAvailable: true,
   },
@@ -190,7 +190,7 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: "Chocolate Lava Cake",
     description: "Warm chocolate cake with a molten center, served with vanilla ice cream.",
     price: 199,
-    image: "https://images.unsplash.com/photo-1624353365286-3f8d62daad51?w=500&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80",
     category: "DESSERTS",
     isAvailable: true,
   },
@@ -198,25 +198,26 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     name: "Tiramisu",
     description: "Classic Italian dessert with espresso-soaked ladyfingers, mascarpone cream, and cocoa.",
     price: 249,
-    image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=500&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=600&q=80",
     category: "DESSERTS",
     isAvailable: true,
   },
 ];
 
+// Force reset menu items so fresh URLs are always applied
+store.menuItems.clear();
+INITIAL_MENU.forEach((item, idx) => {
+  const id = `item_${idx + 1}`;
+  store.menuItems.set(id, {
+    ...item,
+    id,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
+});
+
 async function ensureSeeded() {
   if (store.initialized) return;
-
-  // Seed Menu
-  INITIAL_MENU.forEach((item, idx) => {
-    const id = `item_${idx + 1}`;
-    store.menuItems.set(id, {
-      ...item,
-      id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-  });
 
   // Seed Admin
   const adminId = "user_admin";
@@ -248,7 +249,7 @@ async function ensureSeeded() {
     updatedAt: new Date(),
   });
 
-  // Seed a sample order for John Doe
+  // Seed sample order
   const sampleOrderId = "order_sample_1";
   const sampleItems: DBOrderItem[] = [
     {
@@ -271,11 +272,6 @@ async function ensureSeeded() {
     },
   ];
 
-  const subtotal = 697;
-  const tax = 69.7;
-  const deliveryFee = 40;
-  const total = 806.7;
-
   store.orders.set(sampleOrderId, {
     id: sampleOrderId,
     orderNumber: "ORD-9X8K2M",
@@ -286,10 +282,10 @@ async function ensureSeeded() {
     deliveryAddress: "123 Main Street, Apartment 4B, Mumbai 400001",
     deliveryNotes: "Ring the doorbell",
     status: "PREPARING",
-    subtotal,
-    tax,
-    deliveryFee,
-    total,
+    subtotal: 697,
+    tax: 69.7,
+    deliveryFee: 40,
+    total: 806.7,
     items: sampleItems,
     statusHistory: [
       {
@@ -378,7 +374,6 @@ export const db = {
     await ensureSeeded();
     const orderId = `order_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
-    // Build items with validated DB prices
     let subtotal = 0;
     const orderItems: DBOrderItem[] = [];
 
@@ -405,7 +400,6 @@ export const db = {
     const deliveryFee = 40;
     const total = Math.round((subtotal + tax + deliveryFee) * 100) / 100;
 
-    // Generate random orderNumber
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let orderNumber = "ORD-";
     for (let i = 0; i < 6; i++) {

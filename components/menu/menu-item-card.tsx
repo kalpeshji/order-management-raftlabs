@@ -1,7 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import { Plus, Minus, Check } from "lucide-react";
+import { Plus, Minus, Check, Utensils } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/lib/store/cart";
 import { useState } from "react";
@@ -24,8 +23,10 @@ export function MenuItemCard({ item }: MenuItemCardProps) {
   const { items, addItem, updateQuantity } = useCartStore();
   const cartItem = items.find((i) => i.menuItemId === item.id);
   const quantity = cartItem?.quantity || 0;
-  const priceNum = typeof item.price === "string" ? parseFloat(item.price) : Number(item.price);
+  const priceNum =
+    typeof item.price === "string" ? parseFloat(item.price) : Number(item.price);
   const [isAddedAnim, setIsAddedAnim] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const handleAdd = () => {
     addItem({
@@ -41,18 +42,27 @@ export function MenuItemCard({ item }: MenuItemCardProps) {
   return (
     <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-card text-card-foreground shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary/30">
       <div>
-        <div className="relative aspect-4/3 w-full overflow-hidden bg-muted">
-          <Image
-            src={item.image}
-            alt={item.name}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            priority={false}
-          />
+        {/* Fixed 192px image container with fallback */}
+        <div className="relative h-48 w-full overflow-hidden bg-zinc-800">
+          {!imgError ? (
+            <img
+              src={item.image}
+              alt={item.name}
+              loading="lazy"
+              onError={() => setImgError(true)}
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="size-full flex flex-col items-center justify-center bg-zinc-800 text-zinc-300 p-4 text-center">
+              <Utensils className="size-8 mb-2 text-amber-400" />
+              <span className="text-xs font-semibold">{item.name}</span>
+            </div>
+          )}
+
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
           <div className="absolute top-3 left-3">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-background/90 text-foreground backdrop-blur-md shadow-xs border border-border/50">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-black/70 text-white backdrop-blur-md shadow-xs border border-white/20">
               {item.category}
             </span>
           </div>
@@ -103,7 +113,9 @@ export function MenuItemCard({ item }: MenuItemCardProps) {
             >
               <Minus className="size-3.5" />
             </Button>
-            <span className="font-bold text-sm text-primary px-3">{quantity} in cart</span>
+            <span className="font-bold text-sm text-primary px-3">
+              {quantity} in cart
+            </span>
             <Button
               variant="ghost"
               size="icon-xs"

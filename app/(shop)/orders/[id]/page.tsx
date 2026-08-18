@@ -130,28 +130,8 @@ export default function OrderTrackingPage({
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
               Order #{order.orderNumber}
             </h1>
-            <span
-              className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                isConnected
-                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                  : "bg-muted text-muted-foreground"
-              }`}
-            >
-              <Radio className={`size-3 ${isConnected ? "animate-pulse" : ""}`} />
-              <span>{isConnected ? "Live SSE Stream" : "Polling Updates"}</span>
-            </span>
           </div>
         </div>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={fetchOrder}
-          className="rounded-xl text-xs gap-1.5 self-start sm:self-auto"
-        >
-          <RefreshCw className="size-3.5" />
-          <span>Refresh</span>
-        </Button>
       </div>
 
       {/* Grid Layout: Timeline Tracker + Order Receipt */}

@@ -18,7 +18,7 @@ export default function ShopLayout({
             <p className="font-medium text-foreground">
               FoodDash &bull; Real-time Food Delivery & Order Management
             </p>
-            <p>&copy; {new Date().getFullYear()} FoodDash Inc. Built with Next.js, TypeScript & Tailwind CSS.</p>
+            <p>&copy; {new Date().getFullYear()} FoodDash Inc.</p>
           </div>
         </footer>
       </div>

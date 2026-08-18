@@ -20,14 +20,8 @@ export default async function AdminPage() {
     <div className="space-y-6 sm:space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-              <ShieldCheck className="size-3.5" />
-              <span>Kitchen Operations Panel</span>
-            </span>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-            Active Orders Console
+            Active Orders
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground">
             Manage live restaurant orders, advance cooking and delivery stages in real-time.

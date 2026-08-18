@@ -59,7 +59,7 @@ export function StatusTracker({ currentStatus, statusHistory = [] }: StatusTrack
         </div>
         <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
           <span className="size-2 rounded-full bg-emerald-500 animate-ping" />
-          <span>Live Tracking</span>
+          <span>Live</span>
         </div>
       </div>
 

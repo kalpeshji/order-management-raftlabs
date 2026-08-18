@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useCartStore } from "@/lib/store/cart";
 import { ShoppingBag, ShieldCheck } from "lucide-react";
 
@@ -28,13 +27,11 @@ export function OrderSummary() {
             className="flex items-center justify-between text-sm gap-3"
           >
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="relative size-10 rounded-lg overflow-hidden bg-muted shrink-0 border border-border/50">
-                <Image
+              <div className="relative size-10 rounded-lg overflow-hidden bg-zinc-800 shrink-0 border border-border/50">
+                <img
                   src={item.image}
                   alt={item.name}
-                  fill
-                  sizes="40px"
-                  className="object-cover"
+                  className="h-full w-full object-cover"
                 />
               </div>
               <div className="truncate">

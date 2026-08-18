@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
 import { Plus, Minus, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { CartItem, useCartStore } from "@/lib/store/cart";
 
 interface CartItemRowProps {
@@ -14,13 +12,11 @@ export function CartItemRow({ item }: CartItemRowProps) {
 
   return (
     <div className="flex items-center gap-3 py-3 border-b border-border/60 last:border-0 group">
-      <div className="relative size-16 rounded-xl overflow-hidden bg-muted shrink-0 border border-border/50">
-        <Image
+      <div className="relative size-16 rounded-xl overflow-hidden bg-zinc-800 shrink-0 border border-border/50">
+        <img
           src={item.image}
           alt={item.name}
-          fill
-          sizes="64px"
-          className="object-cover"
+          className="h-full w-full object-cover"
         />
       </div>
 

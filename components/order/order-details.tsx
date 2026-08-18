@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { MapPin, Phone, User, Calendar, Receipt } from "lucide-react";
 
 interface OrderItemInfo {
@@ -95,13 +94,11 @@ export function OrderDetails({ order }: OrderDetailsProps) {
             >
               <div className="flex items-center gap-3 min-w-0">
                 {item.menuItem?.image && (
-                  <div className="relative size-11 rounded-lg overflow-hidden bg-muted shrink-0 border border-border/50">
-                    <Image
+                  <div className="relative size-11 rounded-lg overflow-hidden bg-zinc-800 shrink-0 border border-border/50">
+                    <img
                       src={item.menuItem.image}
                       alt={item.menuItem.name}
-                      fill
-                      sizes="44px"
-                      className="object-cover"
+                      className="h-full w-full object-cover"
                     />
                   </div>
                 )}
