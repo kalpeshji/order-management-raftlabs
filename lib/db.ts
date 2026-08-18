@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { prisma } from "@/lib/prisma";
 
 export interface DBUser {
   id: string;
@@ -62,7 +63,7 @@ export interface DBOrder {
   updatedAt: Date;
 }
 
-// Global in-memory storage for persistent hot-reload state
+// Fallback in-memory store
 declare global {
   var __fooddash_db: {
     users: Map<string, DBUser>;
@@ -83,8 +84,7 @@ if (!globalThis.__fooddash_db) {
 
 const store = globalThis.__fooddash_db;
 
-const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
-  // Pizza
+const INITIAL_MENU = [
   {
     name: "Margherita Pizza",
     description: "Classic pizza with fresh mozzarella, San Marzano tomatoes, and basil on a crispy thin crust.",
@@ -109,7 +109,6 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     category: "PIZZA",
     isAvailable: true,
   },
-  // Burgers
   {
     name: "Classic Smash Burger",
     description: "Double smashed patties with American cheese, pickles, onions, and special sauce.",
@@ -126,7 +125,6 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     category: "BURGERS",
     isAvailable: true,
   },
-  // Pasta
   {
     name: "Penne Arrabbiata",
     description: "Penne pasta in a spicy tomato sauce with garlic, chili flakes, and fresh parsley.",
@@ -143,7 +141,6 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     category: "PASTA",
     isAvailable: true,
   },
-  // Sides
   {
     name: "Garlic Bread",
     description: "Toasted ciabatta with roasted garlic butter, herbs, and melted mozzarella.",
@@ -160,7 +157,6 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     category: "SIDES",
     isAvailable: true,
   },
-  // Beverages
   {
     name: "Fresh Lime Soda",
     description: "Freshly squeezed lime with soda water, a hint of mint, and your choice of sweet or salted.",
@@ -185,7 +181,6 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
     category: "BEVERAGES",
     isAvailable: true,
   },
-  // Desserts
   {
     name: "Chocolate Lava Cake",
     description: "Warm chocolate cake with a molten center, served with vanilla ice cream.",
@@ -204,22 +199,66 @@ const INITIAL_MENU: Omit<DBMenuItem, "id" | "createdAt" | "updatedAt">[] = [
   },
 ];
 
-// Force reset menu items so fresh URLs are always applied
-store.menuItems.clear();
-INITIAL_MENU.forEach((item, idx) => {
-  const id = `item_${idx + 1}`;
-  store.menuItems.set(id, {
-    ...item,
-    id,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  });
-});
-
 async function ensureSeeded() {
   if (store.initialized) return;
 
-  // Seed Admin
+  try {
+    if (process.env.DATABASE_URL) {
+      const count = await prisma.menuItem.count();
+      if (count === 0) {
+        for (const item of INITIAL_MENU) {
+          await prisma.menuItem.create({ data: item });
+        }
+      }
+
+      // Check admin
+      const admin = await prisma.user.findUnique({ where: { email: "admin@fooddash.com" } });
+      if (!admin) {
+        const adminPass = await bcrypt.hash("admin123", 10);
+        await prisma.user.create({
+          data: {
+            name: "Admin",
+            email: "admin@fooddash.com",
+            phone: "+91 9999999999",
+            password: adminPass,
+            role: "ADMIN",
+            address: "FoodDash Kitchen HQ, Mumbai",
+          },
+        });
+      }
+
+      // Check demo user
+      const demoUser = await prisma.user.findUnique({ where: { email: "user@fooddash.com" } });
+      if (!demoUser) {
+        const userPass = await bcrypt.hash("user123", 10);
+        await prisma.user.create({
+          data: {
+            name: "John Doe",
+            email: "user@fooddash.com",
+            phone: "+91 9876543210",
+            password: userPass,
+            role: "USER",
+            address: "123 Main Street, Apartment 4B, Mumbai 400001",
+          },
+        });
+      }
+    }
+  } catch (err) {
+    console.warn("Prisma auto-seed warning, continuing with memory fallback:", err);
+  }
+
+  // Memory fallback init
+  INITIAL_MENU.forEach((item, idx) => {
+    const id = `item_${idx + 1}`;
+    store.menuItems.set(id, {
+      ...item,
+      id,
+      category: item.category as any,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+  });
+
   const adminId = "user_admin";
   const adminPass = await bcrypt.hash("admin123", 10);
   store.users.set(adminId, {
@@ -234,7 +273,6 @@ async function ensureSeeded() {
     updatedAt: new Date(),
   });
 
-  // Seed Demo User
   const demoUserId = "user_demo";
   const userPass = await bcrypt.hash("user123", 10);
   store.users.set(demoUserId, {
@@ -249,70 +287,28 @@ async function ensureSeeded() {
     updatedAt: new Date(),
   });
 
-  // Seed sample order
-  const sampleOrderId = "order_sample_1";
-  const sampleItems: DBOrderItem[] = [
-    {
-      id: "oi_1",
-      orderId: sampleOrderId,
-      menuItemId: "item_1",
-      menuItem: store.menuItems.get("item_1")!,
-      quantity: 1,
-      unitPrice: 299,
-      itemTotal: 299,
-    },
-    {
-      id: "oi_2",
-      orderId: sampleOrderId,
-      menuItemId: "item_4",
-      menuItem: store.menuItems.get("item_4")!,
-      quantity: 2,
-      unitPrice: 199,
-      itemTotal: 398,
-    },
-  ];
-
-  store.orders.set(sampleOrderId, {
-    id: sampleOrderId,
-    orderNumber: "ORD-9X8K2M",
-    userId: demoUserId,
-    user: { name: "John Doe", email: "user@fooddash.com" },
-    customerName: "John Doe",
-    customerPhone: "+91 9876543210",
-    deliveryAddress: "123 Main Street, Apartment 4B, Mumbai 400001",
-    deliveryNotes: "Ring the doorbell",
-    status: "PREPARING",
-    subtotal: 697,
-    tax: 69.7,
-    deliveryFee: 40,
-    total: 806.7,
-    items: sampleItems,
-    statusHistory: [
-      {
-        id: "sh_1",
-        orderId: sampleOrderId,
-        status: "ORDER_RECEIVED",
-        note: "Order received by kitchen",
-        timestamp: new Date(Date.now() - 1000 * 60 * 10),
-      },
-      {
-        id: "sh_2",
-        orderId: sampleOrderId,
-        status: "PREPARING",
-        note: "Chef is preparing your delicious meal",
-        timestamp: new Date(Date.now() - 1000 * 60 * 5),
-      },
-    ],
-    createdAt: new Date(Date.now() - 1000 * 60 * 10),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 5),
-  });
-
   store.initialized = true;
 }
 
 export const db = {
   async getMenuItems(category?: string) {
     await ensureSeeded();
+    try {
+      if (process.env.DATABASE_URL) {
+        const where: any = { isAvailable: true };
+        if (category && category !== "ALL") {
+          where.category = category;
+        }
+        const items = await prisma.menuItem.findMany({
+          where,
+          orderBy: { createdAt: "asc" },
+        });
+        if (items.length > 0) return items as DBMenuItem[];
+      }
+    } catch (e) {
+      console.warn("Prisma getMenuItems error, using fallback:", e);
+    }
+
     let items = Array.from(store.menuItems.values()).filter((i) => i.isAvailable);
     if (category && category !== "ALL") {
       items = items.filter((i) => i.category === category);
@@ -322,11 +318,27 @@ export const db = {
 
   async getMenuItemById(id: string) {
     await ensureSeeded();
+    try {
+      if (process.env.DATABASE_URL) {
+        const item = await prisma.menuItem.findUnique({ where: { id } });
+        if (item) return item as DBMenuItem;
+      }
+    } catch (e) {
+      console.warn("Prisma getMenuItemById error, using fallback:", e);
+    }
     return store.menuItems.get(id) || null;
   },
 
   async getUserByEmail(email: string) {
     await ensureSeeded();
+    try {
+      if (process.env.DATABASE_URL) {
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (user) return user as DBUser;
+      }
+    } catch (e) {
+      console.warn("Prisma getUserByEmail error, using fallback:", e);
+    }
     for (const u of store.users.values()) {
       if (u.email.toLowerCase() === email.toLowerCase()) return u;
     }
@@ -335,6 +347,14 @@ export const db = {
 
   async getUserById(id: string) {
     await ensureSeeded();
+    try {
+      if (process.env.DATABASE_URL) {
+        const user = await prisma.user.findUnique({ where: { id } });
+        if (user) return user as DBUser;
+      }
+    } catch (e) {
+      console.warn("Prisma getUserById error, using fallback:", e);
+    }
     return store.users.get(id) || null;
   },
 
@@ -347,6 +367,24 @@ export const db = {
     address?: string | null;
   }) {
     await ensureSeeded();
+    try {
+      if (process.env.DATABASE_URL) {
+        const user = await prisma.user.create({
+          data: {
+            name: data.name,
+            email: data.email,
+            phone: data.phone || null,
+            password: data.password,
+            role: data.role || "USER",
+            address: data.address || null,
+          },
+        });
+        return user as DBUser;
+      }
+    } catch (e) {
+      console.warn("Prisma createUser error, using fallback:", e);
+    }
+
     const id = `user_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     const user: DBUser = {
       id,
@@ -372,8 +410,83 @@ export const db = {
     items: { menuItemId: string; quantity: number }[];
   }) {
     await ensureSeeded();
-    const orderId = `order_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let orderNumber = "ORD-";
+    for (let i = 0; i < 6; i++) {
+      orderNumber += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    try {
+      if (process.env.DATABASE_URL) {
+        // Fetch all items from DB for verified pricing
+        const menuItems = await prisma.menuItem.findMany({
+          where: { id: { in: data.items.map((i) => i.menuItemId) } },
+        });
+
+        const itemMap = new Map(menuItems.map((m) => [m.id, m]));
+        let subtotal = 0;
+        const createItemsData = [];
+
+        for (const itemInput of data.items) {
+          const menuItem = itemMap.get(itemInput.menuItemId);
+          if (!menuItem) throw new Error(`Item ${itemInput.menuItemId} not found`);
+
+          const itemTotal = menuItem.price * itemInput.quantity;
+          subtotal += itemTotal;
+
+          createItemsData.push({
+            menuItemId: menuItem.id,
+            quantity: itemInput.quantity,
+            unitPrice: menuItem.price,
+            itemTotal,
+          });
+        }
+
+        const tax = Math.round(subtotal * 0.1 * 100) / 100;
+        const deliveryFee = 40;
+        const total = Math.round((subtotal + tax + deliveryFee) * 100) / 100;
+
+        const order = await prisma.order.create({
+          data: {
+            orderNumber,
+            userId: data.userId,
+            customerName: data.customerName,
+            customerPhone: data.customerPhone,
+            deliveryAddress: data.deliveryAddress,
+            deliveryNotes: data.deliveryNotes || null,
+            status: "ORDER_RECEIVED",
+            subtotal,
+            tax,
+            deliveryFee,
+            total,
+            items: {
+              create: createItemsData,
+            },
+            statusHistory: {
+              create: [
+                {
+                  status: "ORDER_RECEIVED",
+                  note: "Order placed successfully",
+                },
+              ],
+            },
+          },
+          include: {
+            items: { include: { menuItem: true } },
+            statusHistory: { orderBy: { timestamp: "asc" } },
+            user: { select: { name: true, email: true } },
+          },
+        });
+
+        return order as unknown as DBOrder;
+      }
+    } catch (e) {
+      console.warn("Prisma createOrder error, using memory fallback:", e);
+    }
+
+    // In-memory fallback
+    const orderId = `order_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     let subtotal = 0;
     const orderItems: DBOrderItem[] = [];
 
@@ -399,12 +512,6 @@ export const db = {
     const tax = Math.round(subtotal * 0.1 * 100) / 100;
     const deliveryFee = 40;
     const total = Math.round((subtotal + tax + deliveryFee) * 100) / 100;
-
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let orderNumber = "ORD-";
-    for (let i = 0; i < 6; i++) {
-      orderNumber += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
 
     const initialLog: DBOrderStatusLog = {
       id: `sh_${Date.now()}`,
@@ -442,21 +549,54 @@ export const db = {
 
   async getOrderById(id: string) {
     await ensureSeeded();
+    try {
+      if (process.env.DATABASE_URL) {
+        const order = await prisma.order.findUnique({
+          where: { id },
+          include: {
+            items: { include: { menuItem: true } },
+            statusHistory: { orderBy: { timestamp: "asc" } },
+            user: { select: { name: true, email: true } },
+          },
+        });
+        if (order) return order as unknown as DBOrder;
+      }
+    } catch (e) {
+      console.warn("Prisma getOrderById error, using fallback:", e);
+    }
     return store.orders.get(id) || null;
   },
 
   async getOrders(userId?: string, statusFilter?: string) {
     await ensureSeeded();
-    let orders = Array.from(store.orders.values());
+    try {
+      if (process.env.DATABASE_URL) {
+        const where: any = {};
+        if (userId) where.userId = userId;
+        if (statusFilter && statusFilter !== "ALL") where.status = statusFilter;
 
+        const orders = await prisma.order.findMany({
+          where,
+          include: {
+            items: { include: { menuItem: true } },
+            statusHistory: { orderBy: { timestamp: "asc" } },
+            user: { select: { name: true, email: true } },
+          },
+          orderBy: { createdAt: "desc" },
+        });
+        return orders as unknown as DBOrder[];
+      }
+    } catch (e) {
+      console.warn("Prisma getOrders error, using fallback:", e);
+    }
+
+    let orders = Array.from(store.orders.values());
     if (userId) {
       orders = orders.filter((o) => o.userId === userId);
     }
-
     if (statusFilter && statusFilter !== "ALL") {
       orders = orders.filter((o) => o.status === statusFilter);
     }
-
     return orders.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   },
 
@@ -466,6 +606,36 @@ export const db = {
     note?: string
   ) {
     await ensureSeeded();
+    try {
+      if (process.env.DATABASE_URL) {
+        const order = await prisma.$transaction(async (tx) => {
+          const updated = await tx.order.update({
+            where: { id },
+            data: { status: newStatus },
+            include: {
+              items: { include: { menuItem: true } },
+              statusHistory: { orderBy: { timestamp: "asc" } },
+              user: { select: { name: true, email: true } },
+            },
+          });
+
+          await tx.orderStatusLog.create({
+            data: {
+              orderId: id,
+              status: newStatus,
+              note: note || `Status updated to ${newStatus.replace(/_/g, " ")}`,
+            },
+          });
+
+          return updated;
+        });
+
+        return order as unknown as DBOrder;
+      }
+    } catch (e) {
+      console.warn("Prisma updateOrderStatus error, using fallback:", e);
+    }
+
     const order = store.orders.get(id);
     if (!order) return null;
 
