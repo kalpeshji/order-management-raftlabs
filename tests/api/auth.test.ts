@@ -4,7 +4,7 @@ import { POST as registerHandler } from "@/app/api/auth/register/route";
 describe("Auth API - Registration", () => {
   it("successfully registers a new user with valid details", async () => {
     const uniqueEmail = `test_${Date.now()}@example.com`;
-    const req = new Request("http://localhost:3000/api/auth/register", {
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/auth/register", {
       method: "POST",
       body: JSON.stringify({
         name: "Test Customer",
@@ -25,7 +25,7 @@ describe("Auth API - Registration", () => {
   });
 
   it("fails when passwords do not match", async () => {
-    const req = new Request("http://localhost:3000/api/auth/register", {
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/auth/register", {
       method: "POST",
       body: JSON.stringify({
         name: "Test Customer",
@@ -43,7 +43,7 @@ describe("Auth API - Registration", () => {
 
   it("fails when email is already registered", async () => {
     const email = "user@fooddash.com"; // seeded demo user
-    const req = new Request("http://localhost:3000/api/auth/register", {
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/auth/register", {
       method: "POST",
       body: JSON.stringify({
         name: "Duplicate User",

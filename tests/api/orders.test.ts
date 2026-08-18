@@ -6,7 +6,7 @@ describe("Orders API", () => {
   it("rejects order creation without authentication", async () => {
     vi.spyOn(nextAuth, "getServerSession").mockResolvedValueOnce(null);
 
-    const req = new Request("http://localhost:3000/api/orders", {
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/orders", {
       method: "POST",
       body: JSON.stringify({
         deliveryAddress: "123 Main St",
@@ -24,7 +24,7 @@ describe("Orders API", () => {
       user: { id: "user_demo", name: "John Doe", email: "user@fooddash.com", role: "USER" },
     } as any);
 
-    const req = new Request("http://localhost:3000/api/orders", {
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/orders", {
       method: "POST",
       body: JSON.stringify({
         deliveryAddress: "456 Park Avenue, Mumbai",
@@ -56,7 +56,7 @@ describe("Orders API", () => {
       user: { id: "user_demo", name: "John Doe", email: "user@fooddash.com", role: "USER" },
     } as any);
 
-    const req = new Request("http://localhost:3000/api/orders", {
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/orders", {
       method: "POST",
       body: JSON.stringify({
         deliveryAddress: "123 Short",

@@ -8,7 +8,7 @@ describe("Order Status API", () => {
       user: { id: "user_demo", name: "John Doe", email: "user@fooddash.com", role: "USER" },
     } as any);
 
-    const req = new Request("http://localhost:3000/api/orders/order_sample_1/status", {
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/orders/order_sample_1/status", {
       method: "PATCH",
       body: JSON.stringify({ status: "OUT_FOR_DELIVERY" }),
     });
@@ -22,7 +22,7 @@ describe("Order Status API", () => {
       user: { id: "user_admin", name: "Admin", email: "admin@fooddash.com", role: "ADMIN" },
     } as any);
 
-    const req = new Request("http://localhost:3000/api/orders/order_sample_1/status", {
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/orders/order_sample_1/status", {
       method: "PATCH",
       body: JSON.stringify({
         status: "OUT_FOR_DELIVERY",

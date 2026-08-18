@@ -3,7 +3,7 @@ import { GET as menuHandler } from "@/app/api/menu/route";
 
 describe("Menu API", () => {
   it("returns list of available menu items", async () => {
-    const req = new Request("http://localhost:3000/api/menu");
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/menu");
     const res = await menuHandler(req);
     expect(res.status).toBe(200);
 
@@ -20,7 +20,7 @@ describe("Menu API", () => {
   });
 
   it("filters menu items by category", async () => {
-    const req = new Request("http://localhost:3000/api/menu?category=PIZZA");
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/menu?category=PIZZA");
     const res = await menuHandler(req);
     expect(res.status).toBe(200);
 

@@ -26,7 +26,7 @@ async function runTests() {
 
   console.log("📦 1. AUTHENTICATION & USER REGISTRATION TESTS");
   await test("User registration validates matching passwords", async () => {
-    const req = new Request("http://localhost:3000/api/auth/register", {
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/auth/register", {
       method: "POST",
       body: JSON.stringify({
         name: "Mismatch User",
@@ -43,7 +43,7 @@ async function runTests() {
 
   await test("User registration creates valid user account", async () => {
     const uniqueEmail = `test_${Date.now()}@example.com`;
-    const req = new Request("http://localhost:3000/api/auth/register", {
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/auth/register", {
       method: "POST",
       body: JSON.stringify({
         name: "Test Customer",
@@ -62,7 +62,7 @@ async function runTests() {
   });
 
   await test("Prevents duplicate user registration", async () => {
-    const req = new Request("http://localhost:3000/api/auth/register", {
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/auth/register", {
       method: "POST",
       body: JSON.stringify({
         name: "Duplicate User",
@@ -77,7 +77,7 @@ async function runTests() {
 
   console.log("\n🍕 2. MENU DISPLAY & FILTERING TESTS");
   await test("Menu retrieval returns populated food catalog", async () => {
-    const req = new Request("http://localhost:3000/api/menu");
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/menu");
     const res = await menuHandler(req);
     assert.strictEqual(res.status, 200);
     const data = await res.json();
@@ -89,7 +89,7 @@ async function runTests() {
   });
 
   await test("Menu filters by category correctly", async () => {
-    const req = new Request("http://localhost:3000/api/menu?category=PIZZA");
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/menu?category=PIZZA");
     const res = await menuHandler(req);
     assert.strictEqual(res.status, 200);
     const data = await res.json();
@@ -101,7 +101,7 @@ async function runTests() {
 
   console.log("\n🛒 3. ORDER PLACEMENT & PRICING VERIFICATION TESTS");
   await test("Rejects unauthenticated order placement", async () => {
-    const req = new Request("http://localhost:3000/api/orders", {
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/orders", {
       method: "POST",
       body: JSON.stringify({
         deliveryAddress: "123 Main St",
@@ -119,7 +119,7 @@ async function runTests() {
       user: { id: "user_demo", name: "John Doe", email: "user@fooddash.com", role: "USER" },
     };
 
-    const req = new Request("http://localhost:3000/api/orders", {
+    const req = new Request("https://order-management-raftlabs-one.vercel.app/api/orders", {
       method: "POST",
       headers: {
         "x-test-session": JSON.stringify(userSession),
@@ -155,7 +155,7 @@ async function runTests() {
       user: { id: "user_demo", name: "John Doe", role: "USER" },
     };
 
-    const req = new Request(`http://localhost:3000/api/orders/${createdOrderId}/status`, {
+    const req = new Request(`https://order-management-raftlabs-one.vercel.app/api/orders/${createdOrderId}/status`, {
       method: "PATCH",
       headers: {
         "x-test-session": JSON.stringify(userSession),
@@ -172,7 +172,7 @@ async function runTests() {
       user: { id: "user_admin", name: "Admin", role: "ADMIN" },
     };
 
-    const req = new Request(`http://localhost:3000/api/orders/${createdOrderId}/status`, {
+    const req = new Request(`https://order-management-raftlabs-one.vercel.app/api/orders/${createdOrderId}/status`, {
       method: "PATCH",
       headers: {
         "x-test-session": JSON.stringify(adminSession),
