@@ -22,9 +22,18 @@ export async function POST(request: Request) {
 
     const { deliveryAddress, deliveryNotes, customerPhone, items } = result.data;
 
+    // Verify the user actually exists in the database (guards against stale session tokens)
+    const user = await db.getUserById(session.user.id);
+    if (!user) {
+      return NextResponse.json(
+        { error: "Session expired. Please log out and sign in again." },
+        { status: 401 }
+      );
+    }
+
     const order = await db.createOrder({
-      userId: session.user.id,
-      customerName: session.user.name || "Customer",
+      userId: user.id,
+      customerName: user.name,
       customerPhone,
       deliveryAddress,
       deliveryNotes,
